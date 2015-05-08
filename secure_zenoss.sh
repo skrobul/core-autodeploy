@@ -19,6 +19,7 @@
 cat << END_OF_CHANGELOG > /dev/null
 2015-05-08  Marek Skrobacki <skrobul@skrobul.com>
    * Set RabbitMQ permissions correctly
+   * Automatically set MySQL root password without asking user.
    
 2013-01-06  Daniel Robbins <drobbins@zenoss.com>
 
