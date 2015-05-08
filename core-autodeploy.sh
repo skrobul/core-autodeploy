@@ -112,7 +112,7 @@ fi
 # Defaults for user provided input
 arch="x86_64"
 # ftp mirror for MySQL to use for version auto-detection:
-mysql_ftp_mirror="ftp://mirror.anl.gov/pub/mysql/Downloads/MySQL-5.5/"
+mysql_ftp_mirror="ftp://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.5/"
 
 # Auto-detect latest build:
 #build=4.2.3
@@ -141,7 +141,8 @@ fi
 
 #MySQL 5.29 creates dependancy issues, we'll force 5.28 for the remainder of the life of 4.2
 try rm -f .listing
-try wget --no-remove-listing $mysql_ftp_mirror >/dev/null 2>&1
+echo "Downloading list of available MySQL versions"
+try wget --no-remove-listing $mysql_ftp_mirror 
 mysql_v="5.5.28-1"
 if [ -e .listing ] && [ -z "$mysql_v" ]; then
 	echo "Auto-detecting most recent MySQL Community release"
