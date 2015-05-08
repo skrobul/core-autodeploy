@@ -108,10 +108,6 @@ if [ -z "$(zenglobalconf -p zodb-admin-password)" ]
 then
     if mysql -uroot mysql -e "select 1" >/dev/null 2>&1
     then
-        echo "MySQL is configured with a blank root password."
-
-        if [ -t 1 ]
-        then
           echo "Changing MySQL root password."
           mysqladmin -uroot -h localhost password "$RANDOM_PASSWORD"
 
@@ -120,9 +116,6 @@ then
               echo "Assigning MySQL root password for global.conf:$ROOT_PWD_PROP"
               zenglobalconf -u $ROOT_PWD_PROP="$RANDOM_PASSWORD"
           done
-          
-        fi
-
     # Using a blank MySQL root password failed.
     else
         echo "Zenoss needs root MySQL access to create its databases."
