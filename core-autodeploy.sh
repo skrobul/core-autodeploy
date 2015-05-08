@@ -130,7 +130,7 @@ for url in $zenoss_base_url/$zenoss_rpm_file; do
 	# have also been modified to use the pre-downloaded version if available.
 	if [ ! -f "${url##*/}" ] && [ ! -f "$SCRIPTPATH/${url##*/}" ];then
 		echo "Downloading ${url##*/}..."
-		try wget --progress=bar -N $url
+		try wget --progress=dot:mega -N $url
 	fi
 done
 
@@ -142,7 +142,7 @@ fi
 #MySQL 5.29 creates dependancy issues, we'll force 5.28 for the remainder of the life of 4.2
 try rm -f .listing
 echo "Downloading list of available MySQL versions"
-try wget --progress=bar --no-remove-listing $mysql_ftp_mirror 
+try wget --progress=dot:mega --no-remove-listing $mysql_ftp_mirror 
 mysql_v="5.5.28-1"
 if [ -e .listing ] && [ -z "$mysql_v" ]; then
 	echo "Auto-detecting most recent MySQL Community release"
@@ -164,12 +164,12 @@ mysql_compat_rpm="MySQL-shared-compat-$mysql_v.linux2.6.x86_64.rpm"
 epel_rpm_url=http://dl.fedoraproject.org/pub/epel/$elv/$arch
 
 echo "Installing EPEL Repo"
-wget --progress=bar -r -l1 --no-parent -A 'epel*.rpm' $epel_rpm_url
+wget --progress=dot:mega -r -l1 --no-parent -A 'epel*.rpm' $epel_rpm_url
 try yum -y --nogpgcheck localinstall */pub/epel/$elv/$arch/epel-*.rpm
 disable_repo epel
 
 echo "Installing RabbitMQ"
-try wget --progress=bar http://www.rabbitmq.com/releases/rabbitmq-server/v${rmqv}/rabbitmq-server-${rmqv}-1.noarch.rpm
+try wget --progress=dot:mega http://www.rabbitmq.com/releases/rabbitmq-server/v${rmqv}/rabbitmq-server-${rmqv}-1.noarch.rpm
 try yum --enablerepo=epel -y --nogpgcheck localinstall rabbitmq-server-${rmqv}-1.noarch.rpm
 # Scientific Linux 6 includes AMQP daemon -> qpidd stop it before starting rabbitmq
 if [ -e /etc/init.d/qpidd ]; then
@@ -181,7 +181,7 @@ enable_service rabbitmq-server
 echo "Downloading Files"
 if [ ! -f $jre_file ];then
 	echo "Downloading Oracle JRE"
-	try wget --progress=bar -N -O $jre_file $jre_url
+	try wget --progress=dot:mega -N -O $jre_file $jre_url
 	try chmod +x $jre_file
 fi
 echo "Installing JRE"
@@ -191,7 +191,7 @@ echo "Downloading and installing MySQL RPMs"
 for file in $mysql_client_rpm $mysql_server_rpm $mysql_shared_rpm $mysql_compat_rpm;
 do
 	if [ ! -f $file ];then
-		try wget --progress=bar -N http://wiki.zenoss.org/download/core/mysql/$file
+		try wget --progress=dot:mega -N http://wiki.zenoss.org/download/core/mysql/$file
 	fi
 	if [ ! -f $file ];then
 		echo "Failed to download $file. I can't continue"
@@ -216,7 +216,7 @@ enable_service mysql
 # set up rrdtool, etc.
 
 echo "Enabling rpmforge repo..."
-try wget --progress=bar  http://apt.sw.be/redhat/$els/en/$arch/rpmforge/RPMS/rpmforge-release-0.5.2-2.$els.rf.$arch.rpm
+try wget --progress=dot:mega  http://apt.sw.be/redhat/$els/en/$arch/rpmforge/RPMS/rpmforge-release-0.5.2-2.$els.rf.$arch.rpm
 try yum --nogpgcheck -y localinstall rpmforge-release-0.5.2-2.$els.rf.$arch.rpm
 disable_repo rpmforge
 	
