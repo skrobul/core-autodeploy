@@ -111,45 +111,15 @@ then
 
         if [ -t 1 ]
         then
-            printf "Configure a secure MySQL root password? [Yn]: "
-            read YESNO
+          echo "Changing MySQL root password."
+          mysqladmin -uroot -h localhost password "$RANDOM_PASSWORD"
 
-            if echo "$YESNO" | egrep -iq Y
-            then
-                while [ 1 ]
-                do
-                    printf "  Enter new MySQL root password: "
-                    stty -echo ; read MYSQL_ROOT_PASSWORD_1 ; stty echo
-                    echo
-
-                    printf "Confirm new MySQL root password: "
-                    stty -echo ; read MYSQL_ROOT_PASSWORD_2 ; stty echo
-                    echo
-
-                    if [ -z "$MYSQL_ROOT_PASSWORD_1" ]
-                    then
-                        echo "A blank password is not acceptable."
-                        continue
-                    fi
-
-                    if [ "$MYSQL_ROOT_PASSWORD_1" != "$MYSQL_ROOT_PASSWORD_2" ]
-                    then
-                        echo "Passwords don't match. Try again."
-                        continue
-                    fi
-
-                    break
-                done
-
-                echo "Changing MySQL root password."
-                mysqladmin -uroot -h localhost password "$MYSQL_ROOT_PASSWORD_1"
-
-                for ROOT_PWD_PROP in zodb-admin-password zep-admin-password
-                do
-                    echo "Assigning MySQL root password for global.conf:$ROOT_PWD_PROP"
-                    zenglobalconf -u $ROOT_PWD_PROP="$MYSQL_ROOT_PASSWORD_1"
-                done
-            fi
+          for ROOT_PWD_PROP in zodb-admin-password zep-admin-password
+          do
+              echo "Assigning MySQL root password for global.conf:$ROOT_PWD_PROP"
+              zenglobalconf -u $ROOT_PWD_PROP="$RANDOM_PASSWORD"
+          done
+          
         fi
 
     # Using a blank MySQL root password failed.
