@@ -237,20 +237,6 @@ try chmod 0700 /opt/zenoss/bin/secure_zenoss.sh
 
 echo "Securing Zenoss"
 try su -l -c /opt/zenoss/bin/secure_zenoss.sh zenoss
-
-# set RabbitMQ passwords
-### RabbitMQ permissions
-PASS="grep amqppassword \$ZENHOME/etc/global.conf | awk '{print \$2}'"
-RABBITMQCTL=$(which rabbitmqctl)
-$RABBITMQCTL stop_app
-$RABBITMQCTL reset
-$RABBITMQCTL start_app
-$RABBITMQCTL add_user "zenoss" "$(su -l zenoss -c "$PASS")"
-$RABBITMQCTL add_vhost "/zenoss"
-$RABBITMQCTL set_permissions -p "/zenoss" "zenoss" '.*' '.*' '.*'
-service rabbitmq-server restart
-
-
 try cp $SCRIPTPATH/zenpack_actions.txt /opt/zenoss/var
 
 echo "Configuring and Starting some Base Services and Zenoss..."
