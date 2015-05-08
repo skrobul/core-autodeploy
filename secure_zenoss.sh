@@ -17,7 +17,9 @@
 ###############################################################################
 
 cat << END_OF_CHANGELOG > /dev/null
-
+2015-05-08  Marek Skrobacki <skrobul@skrobul.com>
+   * Set RabbitMQ permissions correctly
+   
 2013-01-06  Daniel Robbins <drobbins@zenoss.com>
 
     * Make etc/ perm fix always enabled (wouldn't enable properly on some builds)
@@ -177,3 +179,12 @@ then
     echo "Forcing zeneventserver to only listen on 127.0.0.1:8084"
     echo 'export DEFAULT_ZEP_JVM_ARGS="-Djetty.host=localhost -server"' >> ~/.bashrc
 fi
+
+### RabbitMQ permissions
+RABBITMQCTL=$(which rabbitmqctl)
+$RABBITMQCTL stop_app
+$RABBITMQCTL reset
+$RABBITMQCTL start_app
+$RABBITMQCTL add_user "zenoss" "$RANDOM_PASSWORD"
+$RABBITMQCTL add_vhost "/zenoss"
+$RABBITMQCTL set_permissions -p "/zenoss" "zenoss" '.*' '.*' '.*'
